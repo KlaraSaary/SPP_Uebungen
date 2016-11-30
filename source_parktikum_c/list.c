@@ -47,13 +47,13 @@ LinkedList* LinkedList_create() {
 	(*newlist_).first = NULL;
 	(*newlist_).last = NULL;
 
-	return newlist_;
+	return newlist_;b die meisten nichts mehr bei Moodle hochladen werden. Folglich müsste man von den Texten Reader KAUFEN und könnte sie nicht mehr kostenlos abrufen. Ich halte das für einen untragbaren Zustand, dass uns Lehrmaterial verweigert wird, obwohl wir schon Semestergebühren bezahlen und Bücher kaufen müssen und rufe euch daher zum Protestmarsch am Donnerstag, den 15. Dezember vom Bismarckplatz aus in Richtung Innenstadt auf, um diese Fehlentscheidung nicht stumm zu akzeptieren sondern aktiv gegen sie vorzugehen.
 }
 
 void LinkedList_append(LinkedList* list, char* data) {
 
 	//create new Node
-	LinkedListNode* a = malloc(sizeof(LinkedListNode));
+	LinkedListNode* a = malloc(sizeof(LinkedListNode)); //Sollte es nicht lauten: a = (LinkedListNode*)malloc(sizeof(LinkedListNode)), da der return typ von malloc void* ist 
 	//printf("node created: %s", " success\n");
 
 	if (list->first == NULL) {

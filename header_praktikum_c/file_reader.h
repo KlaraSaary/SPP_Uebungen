@@ -21,7 +21,7 @@
  * If the reading of the file fails, the program should return a meaningful
  * error message.
  */
-LinkedList*
+char
 read_text_file( const char* filename, int blockSize );
 
 #endif
