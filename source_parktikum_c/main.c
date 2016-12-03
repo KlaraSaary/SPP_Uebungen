@@ -1,24 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../header_praktikum_c/list.h"
 
 int main() {
 
 	FILE* text;
-	char block[500];
 	text = fopen("text1.txt", "r");
 	if(text == NULL){
 		perror("Error opening file");
 		return(-1);
 	}
-	while(strlen(block) < 500){
-		char temp[10];
-		int i = 500 - strlen(block);
+	int  blocksize = 500;
+	char temp[500];
+	char* b;
+	b =(char*) malloc(blocksize);
+	*b = '\0';
+	//LinkedList* list = LinkedList_create();
+	int i = blocksize;
+	int j = 1;
+	while(i > 0){
+		int i = 500 - strlen(b);
 		fgets(temp,i,text);
-		strcat(block, temp);
-		strcat(block, " ");
+		strcat(b, temp);
+		j++;
 	}
 	fclose(text);
-	printf("%s \n",block);
+	printf("%s \n",b);
+	free(b);
 	return 0;
 }
