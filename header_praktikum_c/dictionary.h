@@ -32,7 +32,7 @@ Dictionary_insert( Dictionary* dict, const char* word );
 
 /**
  * Checks whether a word is in the Dictionary.
- * Returns non-zero, if wird is in the dictionary and
+ * Returns non-zero, if word is in the dictionary and
  * zero otherwise.
  */ 
 int
