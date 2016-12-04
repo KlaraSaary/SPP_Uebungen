@@ -37,7 +37,7 @@ LinkedList* read_text_file( const char* filename, int blockSize ) {
 		 * Then append the char pointer to LinkedList
 		 */
 		else{
-			a[j] = (char*) malloc(sizeof(char)*strlen(b));
+			a[j] = (char*) malloc(sizeof(char)*strlen(b)+1);
 			if(a[j] == NULL){printf("\nKein Speicher vorhanden\n");};
 			*a[j] = '\0';
 			//printf("B: %s \n", b);
@@ -58,12 +58,12 @@ LinkedList* read_text_file( const char* filename, int blockSize ) {
 	LinkedList_append(list, a[j]);
 
 	fclose(text);
-	printf("%s \n",a[0]);
+	printf("%s \n",a[s]);
 	free(b);
 	return list;
 };
 
 int main(){
-	read_text_file("/home/klara/TUD/16_17WS/SPP/Uebung/text1.txt", 16000);
+	read_text_file("/home/klara/TUD/16_17WS/SPP/Uebung/Lab1/text1.txt", 16000);
 	return 0;
 }
