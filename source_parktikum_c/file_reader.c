@@ -4,11 +4,12 @@
 #include "../header_praktikum_c/list.h"
 #include <math.h>
 
-int main() {
+
+char read_text_file( const char* filename, int blockSize ) {
 
 	FILE* text;
-	int  blocksize = 500;
-	text = fopen("text1.txt", "r");
+	text = fopen(filename, "r");
+	int blocksize = blockSize;
 	if(text == NULL){
 		perror("Error opening file");
 		return(-1);
@@ -18,7 +19,7 @@ int main() {
 	fseek(text, 0, SEEK_SET);
 	int s = (int) round(size/blocksize + 0.5);
 	char* a[s];
-	char temp[500];
+	char temp[blocksize];
 	char* b;
 	b =(char*) malloc(blocksize);
 	*b = '\0';
@@ -45,5 +46,10 @@ int main() {
 	fclose(text);
 	//printf("%s \n",b);
 	free(b);
+	return *list;
+}
+
+int main(){
+	read_text_file("text1.txt", 500);
 	return 0;
 }
