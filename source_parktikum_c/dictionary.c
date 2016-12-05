@@ -26,13 +26,14 @@ void Dictionary_delete( Dictionary* dict ){
 };
 
 void Dictionary_insert( Dictionary* dict, const char* word ){
+	/*
 	node* newNode = malloc(sizeof(struct node));
 	(*newNode).prefix = word;
 	(*newNode).isword = 1;
 
-	/*if((*dict).root == NULL ){
+	if((*dict).root == NULL ){
 		(*dict).root = newNode;
-	}*/
+	}
 	//else{
 		node* current = (*dict).root;
 		node* parent = NULL;
@@ -62,7 +63,7 @@ void Dictionary_insert( Dictionary* dict, const char* word ){
 					/*prefix is not a real prefix of word
 					*insert a new prefix node as child of current at i. prefix sind die ersten j-1 stellen von word.
 					*kinder des neuen prefix sind das alte child[i] und word
-					*/
+
 					else{
 						insert_word(current, word, i);
 						return;
@@ -87,7 +88,7 @@ void Dictionary_insert( Dictionary* dict, const char* word ){
 				(*current).child = c;
 			};
 		}
-	//}
+	//} */
 };
 
 void insert_word(node* parent, const char* word, int index){

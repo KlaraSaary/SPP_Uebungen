@@ -1,11 +1,21 @@
 #include "../header_praktikum_c/list.h"
+#include "../header_praktikum_c/parser.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
 
-int main() {
 
+int changechar(char** value){
+	value = malloc(256);
+	strcpy(*value,"wer");
+	return 0;
+}
+
+
+
+int main() {
+/*
 	LinkedList* testlist1 = LinkedList_create();
 	LinkedList_append(testlist1, "a");
 	LinkedList_append(testlist1, "b");
@@ -19,7 +29,48 @@ int main() {
 	printf("LinkedList third: %s\n", (LinkedList_getDataAt(testlist1, 2)));
 	printf("LinkedList last: %s\n", (LinkedList_getDataAt(testlist1, 3)));
 	return 0;
+*/
+
+	int i=0;
+	const char* text = "Alle.meine.  Entchen\0";
+	Parser* a = Parser_create(text);
+	char* test[]={"eins","zwei","drei","vier"};
+	char str[18];
+	//test[0] = malloc(256);
+	while(i<4){
+		//printf("%i\n", a->current_word_);
+		//int zu = a->current_word_;
+		Parser_getNextWord(a,&test[i],256);
+	printf("%s\n", test[i]);
+	i++;
+	}
+	//printf("%i", Parser_getNextWord(a,cash[0],8));
+	//printf("hopefully a char: %s", cash[0]);
+
+
+	char* test3= "c";
+	changechar(&test3);
+	printf("%s", test3);
+
+/*
+	char str[256];
+	printf("Type a String to reverse it.[max. 255 chars]\n");
+	fgets(str, 255, stdin);
+	strreverse(str);
+	const char* text = "Alle.meine.  Entchen\0";
+	Parser* a = Parser_create(text);
+	//Parser_getNextWord(a,str,256);
+	printf("%s", str);
+
+
+*/
+
+	return 0;
+
 }
+
+
+
 
 struct LinkedListNode {
 
@@ -47,7 +98,7 @@ LinkedList* LinkedList_create() {
 	(*newlist_).first = NULL;
 	(*newlist_).last = NULL;
 
-	return newlist_;b die meisten nichts mehr bei Moodle hochladen werden. Folglich müsste man von den Texten Reader KAUFEN und könnte sie nicht mehr kostenlos abrufen. Ich halte das für einen untragbaren Zustand, dass uns Lehrmaterial verweigert wird, obwohl wir schon Semestergebühren bezahlen und Bücher kaufen müssen und rufe euch daher zum Protestmarsch am Donnerstag, den 15. Dezember vom Bismarckplatz aus in Richtung Innenstadt auf, um diese Fehlentscheidung nicht stumm zu akzeptieren sondern aktiv gegen sie vorzugehen.
+	return newlist_;
 }
 
 void LinkedList_append(LinkedList* list, char* data) {
@@ -122,7 +173,7 @@ char* LinkedList_getDataAt(LinkedList* list, unsigned int index) {
 
 	int position = 0;
 	LinkedListNode* a = list->first;
-	int gleich = position == index;
+	//int gleich = position == index;
 	while (position != index) {
 		a = a->successor;
 		position++;
