@@ -3,9 +3,12 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
+<<<<<<< Updated upstream
 O_SRCS += \
 ../source_parktikum_c/file_reader.o 
 
+=======
+>>>>>>> Stashed changes
 C_SRCS += \
 ../source_parktikum_c/dictionary.c \
 ../source_parktikum_c/file_reader.c \
@@ -13,6 +16,13 @@ C_SRCS += \
 ../source_parktikum_c/list.c \
 ../source_parktikum_c/parser.c 
 
+<<<<<<< Updated upstream
+=======
+O_SRCS += \
+../source_parktikum_c/file_reader.o \
+../source_parktikum_c/list.o 
+
+>>>>>>> Stashed changes
 OBJS += \
 ./source_parktikum_c/dictionary.o \
 ./source_parktikum_c/file_reader.o \
@@ -32,7 +42,11 @@ C_DEPS += \
 source_parktikum_c/%.o: ../source_parktikum_c/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C Compiler'
+<<<<<<< Updated upstream
 	gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+=======
+	gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+>>>>>>> Stashed changes
 	@echo 'Finished building: $<'
 	@echo ' '
 
