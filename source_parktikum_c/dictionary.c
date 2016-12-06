@@ -28,9 +28,9 @@ void Dictionary_delete( Dictionary* dict ){
 void insert_word_and_prefix(node* parent, node* newNode, int index, int prefixLen);
 void insert_word_as_sibbling(node* parent, node* newNode, int index);
 
-void Dictionary_insert( Dictionary* dict, const char* word ){
+void Dictionary_insert( Dictionary* dict, const char* word ){/*
 <<<<<<< HEAD
-	/*
+
 	node* newNode = malloc(sizeof(struct node));
 	(*newNode).prefix = word;
 	(*newNode).isword = 1;
@@ -79,7 +79,7 @@ void Dictionary_insert( Dictionary* dict, const char* word ){
 					/* prefix is not a real prefix of word
 					 * insert a new prefix node as child of current at i. prefix sind die ersten j-1 stellen von word.
 					 * kinder des neuen prefix sind das alte child[i] und word
-					*/
+
 >>>>>>> e84f2c56e0c827d29ec7b297c3201a4855a60ea4
 					else{
 						insert_word_and_prefix(current, newNode, i, j-1);
@@ -106,12 +106,13 @@ void Dictionary_insert( Dictionary* dict, const char* word ){
 <<<<<<< HEAD
 			};
 		}
-	//} */
+	//}
 =======
-			}*/
+			}
 		return;
 		};
 >>>>>>> e84f2c56e0c827d29ec7b297c3201a4855a60ea4
+*/
 };
 
 /*If a word is found with the same prefix as (*newNode).prefix, insert a new prefix node as child of current
@@ -136,11 +137,13 @@ void insert_word_and_prefix(node* parent, node* newNode, int index, int prefixLe
 
 void insert_word_as_sibbling(node* parent, node* newNode, int index){
 	node* temp_childs[26-index];
-	for(int i = index; i < 26; i++){
+	int i;
+	int j ;
+	for(i = index; i < 26; i++){
 		temp_childs[i-index] = (*parent).child[i];
 	};
 	(*parent).child[index] = newNode;
-	for(int j = index+1; j < 26; j++){
+	for(j = index+1; j < 26; j++){
 		(*parent).child[j] = temp_childs[j-(index+1)];
 	};
 };
@@ -159,7 +162,8 @@ int isIn_child(const node* current,const char* word ){
 
 	if (strcmp((*current).prefix, word) == 0) {return 1;}
 	else{
-		for(int i = 0; i < 26; i++){
+		int i;
+		for(i = 0; i < 26; i++){
 			if((*current).child[i] != NULL){
 				isIn_child((*current).child[i], word);
 			}
@@ -179,7 +183,8 @@ void Dictionary_print( const Dictionary* dict ){
 void print_word(const node* current){
 
 	if((*current).isword && (*current).prefix != NULL){printf("%s \n",(*current).prefix);};
-	for(int i = 0; i < 26; i++){
+	int i;
+	for(i = 0; i < 26; i++){
 		if((*current).child[i] != NULL){
 			print_word((*current).child[i]);
 		};
@@ -195,7 +200,8 @@ void Dictionary_merge( Dictionary* destination, const Dictionary* source){
 
 void merge_dict_insert_source(Dictionary* dest, const node* current){
 	if((*current).isword && (*current).prefix != NULL) {Dictionary_insert(dest, (*current).prefix);};
-	for(int i = 0; i < 26; i++){
+	int i;
+	for(i = 0; i < 26; i++){
 		if((*current).child[i] != NULL){
 			merge_dict_insert_source(dest, (*current).child[i]);
 		};

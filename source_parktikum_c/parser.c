@@ -96,52 +96,16 @@ int Parser_getNextWord( Parser* parser, char** nextWord,  unsigned int bufferLen
 			parser->current_word_++;
 				//printf("isalpha %i \n", isalpha(i[parser->current_word_]));
 		}
+		words[wordcounter_]= '\0';
 
 		*nextWord = (char*)malloc(256);
 		strncpy(*nextWord,words, sizeof(words));
-		//printf("%s \n", *nextWord);
-		//printf("counter %i\n", parser->current_word_);
-		//printf("%s \n", words);
-		//free(nextWord);
 		return 1;
 		}
 
 	}
-	//words[wordcounter_+1]='\0';
-	//nextWord[wordcounter_+1]='\0';
-	//strncpy(nextWord,words,bufferLength);
-
-	//printf("%s \n", nextWord);
-	//nextWord = malloc(256);
-
-	//nextWord = "fick die UNi";
-
-
-
-
 
 
 	return 1;
 
 }
-/*
-
-void strreverse(char* string)
-{
- int i, len;
- char c;
- len=strlen(string);
- char string2[len];
-
- for(i=0; i<len; i++)
- {
-  c=string[i];
-  string2[len-i-1]=string[i];
-
- }
- string2[len]='\0';
- *string=string2;
- printf("%s\n", string);//<-- this would work,but should be in main
-
-}
-*/

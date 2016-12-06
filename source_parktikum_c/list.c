@@ -37,20 +37,17 @@ int main() {
 	char* test[]={"eins","zwei","drei","vier"};
 	char str[18];
 	//test[0] = malloc(256);
-	while(i<4){
-		//printf("%i\n", a->current_word_);
-		//int zu = a->current_word_;
-		Parser_getNextWord(a,&test[i],256);
-	printf("%s\n", test[i]);
-	i++;
-	}
+
+	Parser_getNextWord(a,&test[0],256);
+	printf("%s\n", test[0]);
+	Parser_getNextWord(a,&test[3],256);
+	printf("%s\n", test[3]);
+
+
 	//printf("%i", Parser_getNextWord(a,cash[0],8));
 	//printf("hopefully a char: %s", cash[0]);
 
 
-	char* test3= "c";
-	changechar(&test3);
-	printf("%s", test3);
 
 /*
 	char str[256];
