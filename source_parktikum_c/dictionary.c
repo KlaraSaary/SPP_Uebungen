@@ -28,91 +28,67 @@ void Dictionary_delete( Dictionary* dict ){
 void insert_word_and_prefix(node* parent, node* newNode, int index, int prefixLen);
 void insert_word_as_sibbling(node* parent, node* newNode, int index);
 
-void Dictionary_insert( Dictionary* dict, const char* word ){/*
-<<<<<<< HEAD
+void Dictionary_insert( Dictionary* dict, const char* word ){
 
-	node* newNode = malloc(sizeof(struct node));
-	(*newNode).prefix = word;
-	(*newNode).isword = 1;
-
-	if((*dict).root == NULL ){
-		(*dict).root = newNode;
-	}
-	//else{
-=======
 	node* newNode = malloc(sizeof(node));
 	*((*newNode).prefix) = *word;
 	(*newNode).isword = 1;
 
->>>>>>> e84f2c56e0c827d29ec7b297c3201a4855a60ea4
-		node* current = (*dict).root;
-		node* parent;
-		node* child;
-		int j = 1;
-		int i;
-		while(1){
-			for(i = 0; (*current).child[i] != NULL ;i++){
-				child = (*current).child[i];
-				int comp = strncmp((*child).prefix, word, j);
-				if(comp < 0) {i++;}
-				else if (comp == 0){
-					while(strncmp((*child).prefix, word, j) == 0){
-						j++;
-					};
-					if((j-1) == strlen((*child).prefix) && strlen(word) > j-1){ //child.prefix is a real prefix of word
-						j = j-1;
-						parent = current;
-						current = child;
-						i = 0;
-					}
-					else if(strcmp((*child).prefix, word) == 0){ //prefix == word
-						(*child).isword = 1;
-						free(newNode);
-						return;
-					}
-<<<<<<< HEAD
-					/*prefix is not a real prefix of word
-					*insert a new prefix node as child of current at i. prefix sind die ersten j-1 stellen von word.
-					*kinder des neuen prefix sind das alte child[i] und word
-
-=======
-					/* prefix is not a real prefix of word
-					 * insert a new prefix node as child of current at i. prefix sind die ersten j-1 stellen von word.
-					 * kinder des neuen prefix sind das alte child[i] und word
-
->>>>>>> e84f2c56e0c827d29ec7b297c3201a4855a60ea4
-					else{
-						insert_word_and_prefix(current, newNode, i, j-1);
-						return;
-					};
+	node* current = (*dict).root;
+	node* parent;
+	node* child;
+	int j = 1;
+	int i;
+	while(1){
+		for(i = 0; (*current).child[i] != NULL ;i++){
+			child = (*current).child[i];
+			int comp = strncmp((*child).prefix, word, j);
+			if(comp < 0) {i++;}
+			else if (comp == 0){
+				while(strncmp((*child).prefix, word, j) == 0){
+					j++;
+				};
+				if((j-1) == strlen((*child).prefix) && strlen(word) > j-1){ //child.prefix is a real prefix of word
+					j = j-1;
+					parent = current;
+					current = child;
+					i = 0;
 				}
-				else if(comp > 0){
-					insert_word_as_sibbling(current, newNode, i);
+				else if(strcmp((*child).prefix, word) == 0){ //prefix == word
+					(*child).isword = 1;
+					free(newNode);
 					return;
 				}
-			}
-			if(i <= 26){
-				(*current).child[i] = newNode;
-				return;
-			}
-			/*attach newNode to (*current).child by coping (*current).child in a new array
-			else {
-				node* c[];
-				for(int z = 0; z < k; z++){
-					c[z] = (*current).child[z];
+
+				/* prefix is not a real prefix of word
+				 * insert a new prefix node as child of current at i. prefix sind die ersten j-1 stellen von word.
+				 * kinder des neuen prefix sind das alte child[i] und word
+				*/
+				else{
+					insert_word_and_prefix(current, newNode, i, j-1);
+					return;
 				};
-				c[k] = newNode;
-				(*current).child = c;
-<<<<<<< HEAD
-			};
-		}
-	//}
-=======
 			}
-		return;
+			else if(comp > 0){
+				insert_word_as_sibbling(current, newNode, i);
+				return;
+			};
 		};
->>>>>>> e84f2c56e0c827d29ec7b297c3201a4855a60ea4
-*/
+		if(i <= 26){
+			(*current).child[i] = newNode;
+			return;
+		};
+		/*attach newNode to (*current).child by coping (*current).child in a new array
+		else {
+			node* c[];
+			for(int z = 0; z < k; z++){
+				c[z] = (*current).child[z];
+			};
+			c[k] = newNode;
+			(*current).child = c;
+		}*/
+	return;
+	};
 };
 
 /*If a word is found with the same prefix as (*newNode).prefix, insert a new prefix node as child of current
