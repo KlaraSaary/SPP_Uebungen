@@ -98,7 +98,7 @@ int Parser_getNextWord( Parser* parser, char** nextWord,  unsigned int bufferLen
 		}
 		words[wordcounter_]= '\0';
 
-		*nextWord = (char*)malloc(256);
+		*nextWord = (char*)malloc(sizeof(words)); //alt: (char*)malloc(256)
 		strncpy(*nextWord,words, sizeof(words));
 		return 1;
 		}
