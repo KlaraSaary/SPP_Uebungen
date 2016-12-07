@@ -39,28 +39,8 @@ void Parser_delete( Parser* parser ){
 
 
 
-int Parser_getNextWord( Parser* parser, char** nextWord,  unsigned int bufferLength ){
+int Parser_getNextWord( Parser* parser, char* nextWord,  unsigned int bufferLength ){
 
-/*
-	 * if text ist zu ende return 0 nextWord = \0
-	 *
-	 * if size of next word + \0 > buffelength return 2 halfes
-	 *
-	 * while(nextchar is alpha){
-	 * 	toupper char
-	 * 	append(nextword, char)
-	 * 	}
-	 *
-	 *	wenn sonderzeichen aufhören und 1 zurückgeben
-	 *
-	 *	position speichern in current_position_
-	 *
-	 *	sonderzeichen vor neuem wort wegzählen
-	 *
-	 *
-	 *
-	 *
-*/
 
 	char i[16000];
 	//char* passing_;
@@ -83,6 +63,17 @@ int Parser_getNextWord( Parser* parser, char** nextWord,  unsigned int bufferLen
 
 
 	while(i[parser->current_word_]!='\0'){
+
+		if((wordcounter_+1)==bufferLength){
+			words[wordcounter_]= '\0';
+
+
+			*nextWord = (char*)malloc(256);
+			strncpy(*nextWord,words, sizeof(words));
+			return -1;
+		}
+
+
 		if(isalpha(i[parser->current_word_])==0){
 			parser->current_word_++;
 			//printf("space or questionmark found \n");
@@ -97,9 +88,7 @@ int Parser_getNextWord( Parser* parser, char** nextWord,  unsigned int bufferLen
 				//printf("isalpha %i \n", isalpha(i[parser->current_word_]));
 		}
 		words[wordcounter_]= '\0';
-
-		*nextWord = (char*)malloc(256);
-		strncpy(*nextWord,words, sizeof(words));
+		strncpy(nextWord,words, sizeof(words));
 		return 1;
 		}
 

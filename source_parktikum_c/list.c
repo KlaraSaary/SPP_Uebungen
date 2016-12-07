@@ -1,5 +1,6 @@
 #include "../header_praktikum_c/list.h"
 #include "../header_praktikum_c/parser.h"
+#include "../header_praktikum_c/dictionary.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
@@ -32,36 +33,28 @@ int main() {
 */
 
 	int i=0;
-	const char* text = "Alle.meine.  Entchen\0";
+	const char* text = "Alle.meine. ich hab ein groses problem mit diesem Parser  Entchen\0";
 	Parser* a = Parser_create(text);
-	char* test[]={"eins","zwei","drei","vier"};
-	char str[18];
+	char* test = malloc(sizeof(char));
 	//test[0] = malloc(256);
 
-	Parser_getNextWord(a,&test[0],256);
-	printf("%s\n", test[0]);
-	Parser_getNextWord(a,&test[3],256);
-	printf("%s\n", test[3]);
+	while(Parser_getNextWord(a,test,5) != 0){
+		printf("%s \n", test);
+		//Parser_getNextWord(a,test,10);
+	}
+
+
 
 
 	//printf("%i", Parser_getNextWord(a,cash[0],8));
 	//printf("hopefully a char: %s", cash[0]);
-
-
-
 /*
-	char str[256];
-	printf("Type a String to reverse it.[max. 255 chars]\n");
-	fgets(str, 255, stdin);
-	strreverse(str);
-	const char* text = "Alle.meine.  Entchen\0";
-	Parser* a = Parser_create(text);
-	//Parser_getNextWord(a,str,256);
-	printf("%s", str);
-
-
+	Dictionary* testobject = Dictionary_create();
+	Dictionary_insert(testobject, "whale" );
+	Dictionary_insert(testobject, "word" );
+	Dictionary_insert(testobject, "wood" );
+	Dictionary_print(testobject);
 */
-
 	return 0;
 
 }

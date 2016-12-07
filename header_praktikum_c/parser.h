@@ -50,7 +50,7 @@ Parser_create( const char* text );
  */
 int
 Parser_getNextWord( Parser* parser, 
-		    char** nextWord,
+		    char* nextWord,
 		    unsigned int bufferLength );
 
 /**
