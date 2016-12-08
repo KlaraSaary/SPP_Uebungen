@@ -75,8 +75,8 @@ int main(){
 	char* b = "B";
 	char* y = "Y";
 	char* o = "O";
-//	char* aber ='ABER';
-//	char* absolut = 'ABSOLUT';
+	char* aber ="ABER";
+	char* absolut = "ABSOLUT";
 //	char* clown = 'CLOWN';
 //	char* abend = 'ABEND';
 
@@ -85,7 +85,11 @@ int main(){
 	Dictionary_insert(dict, b);
 	Dictionary_insert(dict, y);
 	Dictionary_insert(dict, o);
+	Dictionary_insert(dict, aber);
+	Dictionary_insert(dict, absolut);
 	Dictionary_print(dict);
+	int i = Dictionary_isIn(dict, aber);
+	printf("main i : %i \n", i);
 };
 
 

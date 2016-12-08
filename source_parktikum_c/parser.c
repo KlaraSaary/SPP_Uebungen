@@ -88,14 +88,14 @@ int Parser_getNextWord( Parser* parser, char* nextWord,  unsigned int bufferLeng
 				//printf("isalpha %i \n", isalpha(i[parser->current_word_]));
 		}
 		words[wordcounter_]= '\0';
-<<<<<<< HEAD
+/*<<<<<<< HEAD
 
 		*nextWord = (char*)malloc(sizeof(words)); //alt: (char*)malloc(256)
 		strncpy(*nextWord,words, sizeof(words));
 =======
 		strncpy(nextWord,words, sizeof(words));
 >>>>>>> master
-		return 1;
+		return 1;*/
 		}
 
 	}

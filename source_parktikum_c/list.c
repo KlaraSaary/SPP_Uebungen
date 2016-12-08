@@ -14,57 +14,6 @@ int changechar(char** value){
 }
 
 
-<<<<<<< HEAD
-=======
-
-int main() {
-/*
-	LinkedList* testlist1 = LinkedList_create();
-	LinkedList_append(testlist1, "a");
-	LinkedList_append(testlist1, "b");
-	LinkedList_append(testlist1, "c");
-	LinkedList_append(testlist1, "d");
-	printf("LinkedList size: %i\n", (LinkedList_getSize(testlist1)));
-	printf("LinkedList first: %s\n",
-			(LinkedList_getData(LinkedList_getFirst(testlist1))));
-	printf("LinkedList first: %s\n", (LinkedList_getDataAt(testlist1, 0)));
-	printf("LinkedList second: %s\n", (LinkedList_getDataAt(testlist1, 1)));
-	printf("LinkedList third: %s\n", (LinkedList_getDataAt(testlist1, 2)));
-	printf("LinkedList last: %s\n", (LinkedList_getDataAt(testlist1, 3)));
-	return 0;
-*/
-
-	int i=0;
-	const char* text = "Alle.meine. ich hab ein groses problem mit diesem Parser  Entchen\0";
-	Parser* a = Parser_create(text);
-	char* test = malloc(sizeof(char));
-	//test[0] = malloc(256);
-
-	while(Parser_getNextWord(a,test,5) != 0){
-		printf("%s \n", test);
-		//Parser_getNextWord(a,test,10);
-	}
-
-
-
-
-	//printf("%i", Parser_getNextWord(a,cash[0],8));
-	//printf("hopefully a char: %s", cash[0]);
-/*
-	Dictionary* testobject = Dictionary_create();
-	Dictionary_insert(testobject, "whale" );
-	Dictionary_insert(testobject, "word" );
-	Dictionary_insert(testobject, "wood" );
-	Dictionary_print(testobject);
-*/
-	return 0;
-
-}
-
-
-
-
->>>>>>> master
 struct LinkedListNode {
 
 	//previous element

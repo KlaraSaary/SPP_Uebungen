@@ -19,8 +19,8 @@ struct Dictionary{
 Dictionary* Dictionary_create(){
 	Dictionary* dict = malloc(sizeof(Dictionary));
 	dict->root = malloc(sizeof(node));
-	//printf("node: %i \n", (int)sizeof(Dictionary));
 	node root;
+	root.isword = 0;
 	memset(root.child, 0, 26*8);
 	*((*dict).root) = root;
 	return dict;
@@ -57,10 +57,11 @@ void Dictionary_insert( Dictionary* dict, const char* word ){
 
 	int j = 1;
 	int i = 0;
+	int insert_word = 0; //boolean: Is word already inserted
 
 	node* current = (*dict).root;
 	node* parent;
-	while(1){
+
 		while(current->child[i] != NULL){
 			//child = current->child[i];
 
@@ -87,86 +88,97 @@ void Dictionary_insert( Dictionary* dict, const char* word ){
 				 * kinder des neuen prefix sind das alte child[i] und word
 				*/
 				else{
+					//printf("current: %s i: %i j: %i word: %s \n", (*current).prefix, i, j, word);
 					insert_word_and_prefix(current, newNode, i, j-1);
+					insert_word = 1;
 					return;
 				};
 			}
 			else if(comp > 0){
 				insert_word_as_sibbling(current, newNode, i);
+				insert_word = 1;
 				return;
 			};
 		}
-		if(i < 26){
-			//node* n = malloc(sizeof(node));
+		if(i < 26 && !insert_word){
 			(*current).child[i] = (node*) malloc(sizeof(node));
 			*((*current).child[i]) = newNode;
-			printf("i: %i %s \n", i, current->child[i]->prefix);
+			//printf("i: %i %s \n", i, current->child[i]->prefix);
+			insert_word=1;
 			return;
 		};
 	return;
-	};
 };
 
 /*If a word is found with the same prefix as (*newNode).prefix, insert a new prefix node as child of current
 *Insert the found word and new word as childs of the new prefix
 */
 void insert_word_and_prefix(node* parent, node newNode, int index, int prefixLen){
-	node newPrefix;// = malloc(sizeof(node));
-	//newPrefix.prefix = malloc(prefixLen);
-	newPrefix.prefix = " ";
-	strncpy(newPrefix.prefix, newNode.prefix, prefixLen);
+	node newPrefix;
 	newPrefix.isword = 0;
-	node* cur_child = (*parent).child[index];
+	newPrefix.prefix = (char*) malloc(prefixLen);
+	memset(newPrefix.child, 0, 26*8);
 
-	*((*parent).child[index]) = newPrefix;
-	newPrefix.child[0] = (node*)malloc(sizeof(node));
-	newPrefix.child[1] = (node*)malloc(sizeof(node));
-	if(strcmp((*cur_child).prefix, newNode.prefix) < 0){
-		*(newPrefix.child[0]) = *cur_child;
+	strncpy(newPrefix.prefix, newNode.prefix, prefixLen);
+	node cur_child = (*(*parent).child[index]);
+
+	newPrefix.child[0] = (node*) malloc(sizeof(node));
+	newPrefix.child[1] = (node*) malloc(sizeof(node));
+
+	if(strcmp(cur_child.prefix, newNode.prefix) < 0){
+		*(newPrefix.child[0]) = cur_child;
 		*(newPrefix.child[1]) = newNode;
 	}
 	else{
-		*(newPrefix.child[1]) = *cur_child;
+		*(newPrefix.child[1]) = cur_child;
 		*(newPrefix.child[0]) = newNode;
 	}
+	(*(*parent).child[index]) = newPrefix;
+
 };
 
 void insert_word_as_sibbling(node* parent, node newNode, int index){
-	node* temp_childs[26-index];
 	int i;
-	int j ;
-	for(i = index; i < 26; i++){
-		temp_childs[i-index] = (*parent).child[i];
-	};
-	(*(*parent).child[index]) = newNode;
-	for(j = index+1; j < 26; j++){
-		(*parent).child[j] = malloc(sizeof(node));
-		(*(*parent).child[j]) = *temp_childs[j-(index+1)];
+	int last = 1; //boolean: Is this the last child?
+	for(i = 25; i >= 0; i = i-1){
+		if((*parent).child[i] == NULL){}
+		else if (last){
+			(*parent).child[i+1] = malloc(sizeof(node));
+			(*(*parent).child[i+1]) = (*(*parent).child[i]);
+			last = 0;
+		}
+		else if(!last && i > index-1){
+			(*(*parent).child[i+1]) = (*(*parent).child[i]);
+		}
+		else if(i == index-1){
+			(*(*parent).child[i+1]) = newNode;
+		};
 	};
 };
-int isIn_child(const node* current,const char* word);
+int isIn_child(const node* current,const char* word, int isIn);
 
 //returns 1 if word is in Dictionary* dict
 int Dictionary_isIn( const Dictionary* dict, const char* word ){
 
 	node*current = (*dict).root;
-	isIn_child(current, word);
-	return 0;
+	int i = isIn_child(current, word, 0);
+	return i;
 };
 
 //recursive helper or Dictionary_isIn()
-int isIn_child(const node* current,const char* word ){
+int isIn_child(const node* current,const char* word, int isIn){
 
-	if (strcmp((*current).prefix, word) == 0) {return 1;}
+	int is = isIn;
+	if ((*current).prefix != NULL && strcmp((*current).prefix, word) == 0) {is = 1;}
 	else{
 		int i;
-		for(i = 0; i < 26; i++){
+		for(i = 0; i < 26 && !is; i++){
 			if((*current).child[i] != NULL){
-				isIn_child((*current).child[i], word);
+				if(isIn_child((*current).child[i], word, is)) is = 1;
 			}
 		};
 	};
-	return 0;
+	return is;
 };
 
 void print_word(const node* current);
@@ -178,7 +190,6 @@ void Dictionary_print( const Dictionary* dict ){
 
 //recursive helper for Dictionary_print()
 void print_word(const node* current){
-
 	if((*current).isword && (*current).prefix != NULL){printf("%s \n",(*current).prefix);};
 	int i;
 	for(i = 0; i < 26; i++){
