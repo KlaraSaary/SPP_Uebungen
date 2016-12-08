@@ -64,21 +64,21 @@ int Parser_getNextWord( Parser* parser, char* nextWord,  unsigned int bufferLeng
 
 	while(i[parser->current_word_]!='\0'){
 
-		if((wordcounter_+1)==bufferLength){
-			words[wordcounter_]= '\0';
-
-
-			*nextWord = (char*)malloc(256);
-			strncpy(*nextWord,words, sizeof(words));
-			return -1;
-		}
-
 
 		if(isalpha(i[parser->current_word_])==0){
 			parser->current_word_++;
 			//printf("space or questionmark found \n");
 		}
-		else{while(isalpha(i[parser->current_word_])!=0){
+		else{
+			while(isalpha(i[parser->current_word_])!=0){
+				if((wordcounter_+1)==bufferLength){
+							words[wordcounter_]= '\0';
+
+
+
+							strncpy(nextWord,words, sizeof(words));
+							return -1;
+						}
 				//int temp_ = toupper(i[parser->current_word_]);
 			words[wordcounter_]= (char) toupper(i[parser->current_word_]);
 				//printf("counter %i\n", parser->current_word_);
