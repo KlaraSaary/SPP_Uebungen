@@ -21,6 +21,7 @@ Dictionary* Dictionary_create(){
 	dict->root = malloc(sizeof(node));
 	node root;
 	root.isword = 0;
+	root.prefix = NULL;
 	memset(root.child, 0, 26*8);
 	*((*dict).root) = root;
 	return dict;
@@ -162,6 +163,7 @@ int Dictionary_isIn( const Dictionary* dict, const char* word ){
 
 	node*current = (*dict).root;
 	int i = isIn_child(current, word, 0);
+	printf("i: %i  \n", i);
 	return i;
 };
 
@@ -169,12 +171,15 @@ int Dictionary_isIn( const Dictionary* dict, const char* word ){
 int isIn_child(const node* current,const char* word, int isIn){
 
 	int is = isIn;
-	if ((*current).prefix != NULL && strcmp((*current).prefix, word) == 0) {is = 1;}
+	if ((*current).prefix != NULL && (strcmp((*current).prefix, word) == 0)){
+		is = 1;
+	}
 	else{
 		int i;
 		for(i = 0; i < 26 && !is; i++){
 			if((*current).child[i] != NULL){
-				if(isIn_child((*current).child[i], word, is)) is = 1;
+				int j = isIn_child((*current).child[i], word, is);
+				if(j) is = 1;
 			}
 		};
 	};

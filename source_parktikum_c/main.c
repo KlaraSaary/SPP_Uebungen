@@ -91,8 +91,8 @@ int main(){
 	Dictionary_insert(dict, aber);
 	Dictionary_insert(dict, absolut);
 	Dictionary_print(dict);
-	//int i = Dictionary_isIn(dict, aber);
-	//printf("main i : %i \n", i);
+	int i = Dictionary_isIn(dict, aber);
+	printf("main i : %i \n", i);
 
 
 	Dictionary* dict_ = Dictionary_create();
