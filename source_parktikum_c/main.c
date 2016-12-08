@@ -31,25 +31,14 @@ int main(){
 	printf("LinkedList third: %s\n", (LinkedList_getDataAt(testlist1, 2)));
 	printf("LinkedList last: %s\n", (LinkedList_getDataAt(testlist1, 3)));
 	return 0;
+*/
 
-
-	int i=0;
-	const char* text = "Alle.meine.  Entchen\0";
-	Parser* a = Parser_create(text);
-	char* test[]={"eins","zwei","drei","vier"};
-	char str[18];
-	//test[0] = malloc(256);
-
-	Parser_getNextWord(a,&test[0],256);
-	printf("%s\n", test[0]);
-	Parser_getNextWord(a,&test[3],256);
-	printf("%s\n", test[3]);
 
 
 	//printf("%i", Parser_getNextWord(a,cash[0],8));
 	//printf("hopefully a char: %s", cash[0]);
 
-
+/*
 
 
 	char str[256];
@@ -71,6 +60,20 @@ int main(){
 
 //main dictionary.c
 int main(){
+
+
+		const char* text = "Alle.meine. juhu Entchen\0";
+		Parser* pars = Parser_create(text);
+		char* test = malloc(sizeof(char));
+		//test[0] = malloc(256);
+		while(Parser_getNextWord(pars,test,6) !=0){
+			printf("%s\n", test);
+		}
+
+
+
+
+
 	char* a = "A";
 	char* b = "B";
 	char* y = "Y";
@@ -88,8 +91,49 @@ int main(){
 	Dictionary_insert(dict, aber);
 	Dictionary_insert(dict, absolut);
 	Dictionary_print(dict);
-	int i = Dictionary_isIn(dict, aber);
-	printf("main i : %i \n", i);
+	//int i = Dictionary_isIn(dict, aber);
+	//printf("main i : %i \n", i);
+
+
+	Dictionary* dict_ = Dictionary_create();
+	LinkedList* reference_ = LinkedList_create();
+	reference_ = read_text_file("/home/felix/workspace_eclipse/testforspp/source_parktikum_c/text1.txt",16000);
+	LinkedList* testtext_= LinkedList_create();
+	testtext_ = read_text_file("/home/felix/workspace_eclipse/testforspp/source_parktikum_c/text2.txt",16000);
+
+	char* parserpointer1_ = malloc(sizeof(char));
+	char* parserpointer2_ = malloc(sizeof(char));
+
+	Parser* parser1_ ;
+	Parser* parser2_ ;
+
+
+	LinkedListNode* acctualnode1_ = LinkedList_getFirst(reference_);
+	while(LinkedList_getNext(acctualnode1_)!= NULL){
+		parser1_ = Parser_create(LinkedList_getData(acctualnode1_));
+		while(Parser_getNextWord(parser1_,parserpointer1_,12)!=0){
+			Dictionary_insert(dict_,parserpointer1_);
+		}
+	}
+
+	int counter_=0 ;
+
+	LinkedListNode* acctualnode2_ = LinkedList_getFirst(testtext_);
+	while(LinkedList_getNext(acctualnode2_) != NULL){
+		parser2_ = Parser_create(LinkedList_getData(acctualnode2_));
+		while(Parser_getNextWord(parser2_,parserpointer2_,12)!=0){
+				if(Dictionary_isIn(dict_, parserpointer2_)){
+					Dictionary_insert(dict_,parserpointer1_);
+					counter_++;
+				}
+
+
+		}
+	}
+
+	printf("%i words are found exclusively in the second text!", counter_);
+	return 0;
+
 };
 
 

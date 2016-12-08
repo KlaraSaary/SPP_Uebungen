@@ -88,6 +88,10 @@ LinkedListNode* LinkedList_getLast(LinkedList* list) {
 	return list->last;
 }
 
+LinkedListNode* LinkedList_getNext(LinkedListNode* node){
+	return node->successor;
+}
+
 LinkedListNode* LinkedList_getPrevious(LinkedListNode* node) {
 	//if(node->predecessor = NULL) return NULL;
 	return node->predecessor;
