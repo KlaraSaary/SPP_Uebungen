@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../header_praktikum_c/list.h"
+#include "../header_praktikum_c/file_reader.h"
 #include <ctype.h>
 
 
@@ -61,9 +61,4 @@ LinkedList* read_text_file( const char* filename, int blockSize ) {
 	free(b);
 	return list;
 };
-/*
-int main(){
-	read_text_file("/home/klara/TUD/16_17WS/SPP/Uebung/Lab1/text1.txt", 16000);
-	return 0;
-}
-*/
+
