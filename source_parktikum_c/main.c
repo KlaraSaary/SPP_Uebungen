@@ -74,34 +74,38 @@ int main(){
 
 
 
-	char* a = "A";
+/*	char* a = "A";
 	char* b = "B";
 	char* y = "Y";
 	char* o = "O";
 	char* aber ="ABER";
+	char* ab = "ABER";
+	char* the = "THE";
+	char* project = "PROJECT";
+	char* gutenberg = "GUTENBERG";
 	char* absolut = "ABSOLUT";
 //	char* clown = 'CLOWN';
 //	char* abend = 'ABEND';
 
 	Dictionary* dict = Dictionary_create();
-	Dictionary_insert(dict, a);
-	Dictionary_insert(dict, b);
-	Dictionary_insert(dict, y);
+	Dictionary_insert(dict, the);
+	Dictionary_insert(dict, project);
+	Dictionary_insert(dict, gutenberg);
 	Dictionary_insert(dict, o);
 	Dictionary_insert(dict, aber);
 	Dictionary_insert(dict, absolut);
 	Dictionary_print(dict);
-	int i = Dictionary_isIn(dict, aber);
-	printf("main i : %i \n", i);
+	int i = Dictionary_isIn(dict, ab);
+	printf("main i : %i \n", i);*/
 
 
 	Dictionary* dict_ = Dictionary_create();
 	LinkedList* reference_ = LinkedList_create();
-	reference_ = read_text_file("/home/felix/workspace_eclipse/testforspp/source_parktikum_c/text1.txt",16000);
-	LinkedList* testtext_= LinkedList_create();
-	testtext_ = read_text_file("/home/felix/workspace_eclipse/testforspp/source_parktikum_c/text2.txt",16000);
+	reference_ = read_text_file("/home/klara/TUD/16_17WS/SPP/Uebung/Lab1/text1.txt",16000);
+//	LinkedList* testtext_= LinkedList_create();
+	//testtext_ = read_text_file("/home/klara/TUD/16_17WS/SPP/Uebung/Lab1/text2.txt",16000);
 
-	char* parserpointer1_ = malloc(sizeof(char));
+	const char* parserpointer1_ = malloc(sizeof(char)*12);
 	char* parserpointer2_ = malloc(sizeof(char));
 
 	Parser* parser1_ ;
@@ -112,13 +116,22 @@ int main(){
 	while(LinkedList_getNext(acctualnode1_)!= NULL){
 		parser1_ = Parser_create(LinkedList_getData(acctualnode1_));
 		while(Parser_getNextWord(parser1_,parserpointer1_,12)!=0){
+		//	printf("adress:%i \n", parserpointer1_);
+		//	printf("here %s \n", parserpointer1_);
+		//	printf("isIn: %i \n", Dictionary_isIn(dict_, parserpointer1_));
 			Dictionary_insert(dict_,parserpointer1_);
+			//printf("here0 \n");
+			parserpointer1_ = malloc(sizeof(char)*12);
+			//printf("adress:%i \n", parserpointer1_);
+			//Dictionary_print(dict_);
 		}
+		//printf("here1 \n");
+		acctualnode1_ = LinkedList_getNext(acctualnode1_);
 	}
-
+	Dictionary_print(dict_);
 	int counter_=0 ;
 
-	LinkedListNode* acctualnode2_ = LinkedList_getFirst(testtext_);
+	/*LinkedListNode* acctualnode2_ = LinkedList_getFirst(testtext_);
 	while(LinkedList_getNext(acctualnode2_) != NULL){
 		parser2_ = Parser_create(LinkedList_getData(acctualnode2_));
 		while(Parser_getNextWord(parser2_,parserpointer2_,12)!=0){
@@ -129,7 +142,7 @@ int main(){
 
 
 		}
-	}
+	} */
 
 	printf("%i words are found exclusively in the second text!", counter_);
 	return 0;
