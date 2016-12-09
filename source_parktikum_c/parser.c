@@ -22,6 +22,7 @@ Parser* Parser_create( const char* text ){
 
 	(*parser_).text_= text;
 	(*parser_).current_word_ = 0;
+	//printf("CONTENT OF PARSER: %s ", text);
 
 
 
@@ -45,22 +46,27 @@ int Parser_getNextWord( Parser* parser, char* nextWord,  unsigned int bufferLeng
 	char i[16000];
 	//char* passing_;
 	//printf("this ist he passed posiotion: %i\n", parser->current_word_);
+	size_t n = sizeof(i)/sizeof(i[0]);
 
 	strcpy(i, parser->text_);
+	//printf("%s", parser->text_);
+
+
 	char words[bufferLength];
 	int wordcounter_ = 0;
 
-	if(i[parser->current_word_]=='\0'){
+	if(i[parser->current_word_]=='\0' || parser->current_word_ == n-2){
 		return 0;
 	}
 
 
-
+/*
 	while(isalpha(i[parser->current_word_])==0){
 		parser->current_word_++;
+		printf("space found at: %i \n",parser->current_word_-1);
 
 	}
-
+*/
 
 	while(i[parser->current_word_]!='\0'){
 
@@ -71,6 +77,7 @@ int Parser_getNextWord( Parser* parser, char* nextWord,  unsigned int bufferLeng
 		}
 		else{
 			while(isalpha(i[parser->current_word_])!=0){
+				//printf("%c \n", i[parser->current_word_]);
 				if((wordcounter_+1)==bufferLength){
 							words[wordcounter_]= '\0';
 
@@ -88,6 +95,9 @@ int Parser_getNextWord( Parser* parser, char* nextWord,  unsigned int bufferLeng
 				//printf("isalpha %i \n", isalpha(i[parser->current_word_]));
 		}
 		words[wordcounter_]= '\0';
+
+		//printf("%s\n", words);
+		//nextWord = (char*)malloc(sizeof(words)); //alt: (char*)malloc(256)
 		strncpy(nextWord,words, sizeof(words));
 		return 1;
 		}

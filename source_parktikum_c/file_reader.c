@@ -50,12 +50,17 @@ LinkedList* read_text_file( const char* filename, int blockSize ) {
 			}
 		}
 	}
+	if(feof(text)){
+		printf("end reched successfully\n");
+	}
+
 	//save last string in b in LinkedList
 	a[j] = (char*) malloc(sizeof(char)*strlen(b));
 	if(a[j] == NULL){printf("\nKein Speicher vorhanden\n");};
 	*a[j] = '\0';
 	strcpy(a[j], b);
 	LinkedList_append(list, a[j]);
+
 
 	fclose(text);
 	free(b);

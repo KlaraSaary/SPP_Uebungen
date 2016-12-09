@@ -61,7 +61,6 @@ void Dictionary_insert( Dictionary* dict, const char* word ){
 	int insert_word = 0; //boolean: Is word already inserted
 
 	node* current = (*dict).root;
-	//node* parent;
 	while(current->child[i] != NULL){
 	//	printf("while \n");
 		//child = current->child[i];

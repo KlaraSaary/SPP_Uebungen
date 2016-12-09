@@ -61,6 +61,7 @@ int main(){
 //main dictionary.c
 int main(){
 
+	/*
 
 		const char* text = "Alle.meine. juhu Entchen\0";
 		Parser* pars = Parser_create(text);
@@ -70,11 +71,11 @@ int main(){
 			printf("%s\n", test);
 		}
 
+	*/
 
 
-
-
-/*	char* a = "A";
+/*
+ * 	char* a = "A";
 	char* b = "B";
 	char* y = "Y";
 	char* o = "O";
@@ -101,11 +102,11 @@ int main(){
 
 	Dictionary* dict_ = Dictionary_create();
 	LinkedList* reference_ = LinkedList_create();
-	reference_ = read_text_file("/home/klara/TUD/16_17WS/SPP/Uebung/Lab1/text1.txt",16000);
+	reference_ = read_text_file("/home/felix/git/spp/SPP_Uebungen/source_parktikum_c/text2.txt",16000);
 //	LinkedList* testtext_= LinkedList_create();
 	//testtext_ = read_text_file("/home/klara/TUD/16_17WS/SPP/Uebung/Lab1/text2.txt",16000);
 
-	const char* parserpointer1_ = malloc(sizeof(char)*12);
+	char* parserpointer1_ = malloc(sizeof(char));
 	char* parserpointer2_ = malloc(sizeof(char));
 
 	Parser* parser1_ ;
@@ -113,22 +114,19 @@ int main(){
 
 
 	LinkedListNode* acctualnode1_ = LinkedList_getFirst(reference_);
-	while(LinkedList_getNext(acctualnode1_)!= NULL){
+	//printf("%s",LinkedList_getData(acctualnode1_));
+	while(acctualnode1_!= NULL){
 		parser1_ = Parser_create(LinkedList_getData(acctualnode1_));
-		while(Parser_getNextWord(parser1_,parserpointer1_,12)!=0){
-		//	printf("adress:%i \n", parserpointer1_);
-		//	printf("here %s \n", parserpointer1_);
-		//	printf("isIn: %i \n", Dictionary_isIn(dict_, parserpointer1_));
+		while(Parser_getNextWord(parser1_,parserpointer1_,20)!=0){
+			printf("%s\n",parserpointer1_);
 			Dictionary_insert(dict_,parserpointer1_);
-			//printf("here0 \n");
-			parserpointer1_ = malloc(sizeof(char)*12);
-			//printf("adress:%i \n", parserpointer1_);
-			//Dictionary_print(dict_);
+			//parserpointer1_ = malloc(sizeof(char)*12);
+
 		}
 		//printf("here1 \n");
 		acctualnode1_ = LinkedList_getNext(acctualnode1_);
 	}
-	Dictionary_print(dict_);
+	//Dictionary_print(dict_);
 	int counter_=0 ;
 
 	/*LinkedListNode* acctualnode2_ = LinkedList_getFirst(testtext_);
