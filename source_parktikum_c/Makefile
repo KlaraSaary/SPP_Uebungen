@@ -1,13 +1,14 @@
 
-OBJ = file_reader.o list.o parser.o dictionary.o main.o
+OBJ = file_reader.o list.o parser.o dictionary.o main1.o
 
 
-
-all:
-
-main: $(OBJ) 
-	gcc -o main $(OBJ) -lgomp -fopenmp 
+main: $(OBJ)
+	gcc -fopenmp -o main $(OBJ)
 
 %.o: %.c
-	gcc -c $<
+	gcc -fopenmp -c $<
 	
+
+
+
+
