@@ -51,7 +51,7 @@ LinkedList* read_text_file( const char* filename, int blockSize ) {
 		}
 	}
 	if(feof(text)){
-		printf("end reched successfully\n");
+		printf("end reached successfully\n");
 	}
 
 	//save last string in b in LinkedList
