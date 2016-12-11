@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
+#include <omp.h>
+
 //main file_reader.c
 /*
 int main(){
@@ -102,9 +104,9 @@ int main(){
 
 	Dictionary* dict_ = Dictionary_create();
 	LinkedList* reference_ = LinkedList_create();
-	reference_ = read_text_file("../text1.txt",16000);
+	reference_ = read_text_file("/home/felix/git/spp/SPP_Uebungen/source_parktikum_c/text1.txt",16000);
 	LinkedList* testtext_= LinkedList_create();
-	testtext_ = read_text_file("../text3.txt",16000);
+	testtext_ = read_text_file("/home/felix/git/spp/SPP_Uebungen/source_parktikum_c/text3.txt",16000);
 
 	char* parserpointer1_ = malloc(sizeof(char));
 	char* parserpointer2_ = malloc(sizeof(char));
@@ -123,20 +125,41 @@ int main(){
 		}
 		acctualnode1_ = LinkedList_getNext(acctualnode1_);
 	}
-//	Dictionary_print(dict_);
+	Dictionary_print(dict_);
 	int counter_=0 ;
 
 	LinkedListNode* acctualnode2_ = LinkedList_getFirst(testtext_);
+ 	int i =0;
+ 	int counter2=0;
+ 	double time = omp_get_wtime( );
+	#pragma omp parallel for private(counter2)\ reduction(+: counter_)
+	for(i=0;i<LinkedList_getSize(testtext_);i++){
+
+		parser2_ = Parser_create(LinkedList_getDataAt(testtext_,i));
+				while(Parser_getNextWord(parser2_,parserpointer2_,12)!=0){
+						if(!Dictionary_isIn(dict_, parserpointer2_)){
+							Dictionary_insert(dict_,parserpointer1_);
+							counter2++;
+							counter_ +=counter2;
+
+						}
+				}
+				//acctualnode2_ = LinkedList_getNext(acctualnode2_);
+
+	}
+
+
 	while(acctualnode2_ != NULL){
 		parser2_ = Parser_create(LinkedList_getData(acctualnode2_));
 		while(Parser_getNextWord(parser2_,parserpointer2_,12)!=0){
-				if(Dictionary_isIn(dict_, parserpointer2_)){
+				if(!Dictionary_isIn(dict_, parserpointer2_)){
 					Dictionary_insert(dict_,parserpointer1_);
 					counter_++;
 				}
 		}
 		acctualnode2_ = LinkedList_getNext(acctualnode2_);
 	}
+	printf("Time: \t %f \n", omp_get_wtime()-time);
 	printf("%i words are found exclusively in the second text!", counter_);
 	return 0;
 
