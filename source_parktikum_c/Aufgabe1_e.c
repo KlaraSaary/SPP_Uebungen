@@ -14,13 +14,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int main(){
+int main(char* text1, char* text2, int blocksize){
 
 	Dictionary* dict_ = Dictionary_create();
 		LinkedList* reference_ = LinkedList_create();
-		reference_ = read_text_file("text1.txt",16000);
+		reference_ = read_text_file(text1,blocksize);
 		LinkedList* testtext_= LinkedList_create();
-		testtext_ = read_text_file("text3.txt",16000);
+		testtext_ = read_text_file(text2,blocksize);
 
 		char* parserpointer1_ = malloc(sizeof(char));
 		char* parserpointer2_ = malloc(sizeof(char));

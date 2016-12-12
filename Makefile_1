@@ -1,0 +1,14 @@
+CFLAGS  = -Wall -g -D_REENTRANT -DVERSION=\"$(VERSION)\" 
+LDFLAGS = -lm -lpthread  
+OBJ = file_reader.o parser.o list.o dictionary.o 
+ 
+all: 
+ 
+prog_1d: $(OBJ) Aufgabe1_d.o 
+  gcc  -o prog_1d $(OBJ) Aufgabe1_d.o  
+ 
+prog_1e: $(OBJ) Aufgabe1_e.o 
+  gcc  -o prog_1e $(OBJ) Aufgabe1_e.o  
+ 
+%.o: %.c 
+  gcc $(CFLAGS) -c $< 
