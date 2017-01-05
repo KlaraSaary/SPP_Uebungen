@@ -36,7 +36,7 @@ void partition(int* data, int len, int* splitters, int num_sp, int* disp){
   //Iterieren über das array data bis len erreicht ist. Wenn data[j] == splitters[i], speicher den Index des gerade betrachteten Elements in disp.
   int j = 0;
   for(int i = 0; i < num_sp; i++){
-    while (data[j] != splitters[i] && j < len){
+    while (data[j] < splitters[i] && j < len){
         j++;
       }
     disp[i] = j;
@@ -52,9 +52,62 @@ int verify_results_eff( int* arr, int len, int myrank, int nprocs ) {
     return 0;
 }
 
+/* compar function fpr qsort() */
 int cmp_qsort (const void * a, const void * b){
    return ( *(int*)a - *(int*)b );
 }
+
+/* function to select global splitter elements*/
+void global_split_elements(int* glob_split, int nprocs, int* all_splits){
+  qsort(all_splits, nprocs*(nprocs -1), sizeof(int), cmp_qsort);
+  int k = 0;
+  for(k; k <= nprocs -2, k++){
+    int j = (nprocs − 1) * (k + 1);
+    glob_split[k] = all_splits[j];
+  }
+}
+
+/*How many ints will one process receive from all the other? */
+void sizeof_receiving_blocks(int* recv_block_size[], int myrank, int* split_index, int nprocs){
+  int l = 0;
+  MPI_Status status;
+  recv_block_size[myrank] = 0;
+  int needed_space = 0;
+  for(l; l < nprocs, l++){
+    if(myrank != l){
+      MPI_Recv(&recv_block_size[l], 1, MPI_INT, l, myrank, MPI_COMM_WORLD, &status);
+      if(l == 0){
+        int block_size = local_glob_split_index[l];
+        MPI_Send(&block_size, 1, MPI_INT, l, l, MPI_COMM_WORLD);
+      }
+      else
+      int block_size = local_glob_split_index[l] - local_glob_split_index[l-1]; //local_glob_split_index[l] - local_glob_split_index[l-1] = the size of the splitter block l
+        MPI_Send(&block_size, 1, MPI_INT, l, l, MPI_COMM_WORLD);
+    }
+    needed_space += recv_block_size[l];
+  }
+  recv_block_size[l] = needed_space;
+}
+
+/* Send one block to each process (blocks could also be empty) and receive blocks from the other process */
+void send_and_receive_blocks(int* my_array, int myrank, int* split_index, int* recv_block_size, int nprocs){
+  int n = 0;
+  MPI_Status = status;
+  int pointer_recv = 0;
+  for(n; n < nprocs, n++){
+    if(myrank != n){
+      MPI_Recv(&my_array[pointer_recv], recv_block_size[n], MPI_INT, n, myrank, MPI_COMM_WORLD, &status);
+      if(n == 0){
+        MPI_Send(&orig_arr[n], local_glob_split_index[n] , MPI_INT, n, n, MPI_COMM_WORLD);
+      }
+      else
+        int send_count = local_glob_split_index[1] - local_glob_split_index[n-1];
+        MPI_Send(&orig_arr[local_glob_split_index[n]], send_count , MPI_INT, n, n, MPI_COMM_WORLD);
+    }
+    pointer_recv += recv_block_size[n];
+  }
+}
+
 /**
  * Do the parallel sorting
  * orig_arr: data
@@ -78,7 +131,7 @@ void par_sort( int** orig_arr, int* orig_len, int myrank, int nprocs ){ //Wieso 
   for(i; i <= nprocs-2; i++){
     int j = n*(i + 1)/nprocs;
     splitters[i] = orig_arr[j];
-  }
+  }block_sizes
 
   /* Gather all the splitters on the root process */
   int *cum_split;
@@ -90,27 +143,33 @@ void par_sort( int** orig_arr, int* orig_len, int myrank, int nprocs ){ //Wieso 
   /* Select global splitters */
   int *glob_split = malloc((nprocs -1)*sizeof(int));
   if(myrank == 0){
-   qsort(cum_split, nprocs*(nprocs -1), sizeof(int), cmp_qsort);
-   int i = 0;
-   for(i; i <= nprocs -2, i++){
-     int j = (nprocs − 1) * (i + 1);
-     glob_split[i] = cum_split[j];
-   }
- }
+   global_split_elements(glob_split, nprocs, cum_split);
+  }
   MPI_Bcast(glob_split, nprocs - 1, MPI_INT, 0, MPI_COMM_WORLD);
 
   /* Redistribute parts */
   // Call partition()
   int *local_glob_split_index = malloc((nprocs -1)*sizeof(int));
   partition(orig_arr, n, glob_split, nprocs-1, local_glob_split_index);
+
   // Tell each process how many elments I send to it
+  int *recv_block_size[nprocs+1];
+  sizeof_receiving_blocks(recv_block_size, myrank, local_glob_split_index, nprocs);
+
   // Allocate array of proper size
-  // Send one block to each process (blocks could also be empty)
+  int *my_array = malloc(recv_block_size[nprocs]*sizeof(int));
+  // Send one block to each process (blocks could also be empty) and receive blocks
+  send_and_receive_blocks(my_array, myrank, local_glob_split_index, recv_block_size, nprocs);
 
   /* Sort locally */
-  
+  qsort(my_array, recv_block_size[nprocs], sizeof(int), cmp_qsort);
 
-  free(splitters)
+  **orig_arr = *my_array; //kopiere my_array in orig_arr
+  free(splitters);
+  free(local_glob_split_index);
+  free(cum_split);
+  free(glob_split);
+  free(my_array);
 }
 
 int main( int argc, char** argv ) {
