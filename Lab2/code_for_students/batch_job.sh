@@ -12,5 +12,6 @@
 
 # -------------------------------
 # Afterwards you write your own commands, e.g.
-
-mpirun -n 32 ./task1 32768
+module load gcc openmpi/gcc
+make all
+mpirun -n 32 ./task2 32768
