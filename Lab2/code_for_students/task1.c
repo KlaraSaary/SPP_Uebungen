@@ -98,21 +98,37 @@ void par_sort( int** orig_arr, int* orig_len, int myrank,
 	
 	//now go through all layers and merge parralel
 	
+	
+	int* sendbuf5 = malloc(nprocs*(*orig_len)*sizeof(int));
+	
 	t=1;
 	while(t<height){
 		if(myrank%(int)pow(2,t)==0){
-			printf("%d revc from %d; orig_arr: %d  snedbuf5: %d\n",myrank,myrank+(int)pow(2,(t-1)),*orig_len*(int)pow(2,t-1),*orig_len*(int)pow(2,t));
-			int* sendbuf2 = malloc(4*(*orig_len)*sizeof(int));
-			int* sendbuf5 = malloc(4*(*orig_len)*sizeof(int));
+			//printf("%d revc from %d; orig_arr: %d  snedbuf5: %d\n",myrank,myrank+(int)pow(2,(t-1)),*orig_len*(int)pow(2,t-1),*orig_len*(int)pow(2,t));
+			int* sendbuf2 = malloc(2*(int)pow(2,t-1)*(*orig_len)*sizeof(int));
 			MPI_Recv(sendbuf5,*orig_len*(int)pow(2,t-1),MPI_INT,myrank+(int)pow(2,(t-1)),myrank+(int)pow(2,(t-1)),MPI_COMM_WORLD,MPI_STATUS_IGNORE);
+			//print(123,*orig_arr,*orig_len*(int)pow(2,t-1));
+			//print(234,sendbuf5,*orig_len*(int)pow(2,t-1));
 			merge_arr(*orig_arr,*orig_len*(int)pow(2,t-1),sendbuf5,*orig_len*(int)pow(2,t-1),sendbuf2);
+			//print(444,*orig_arr,*orig_len*(int)pow(2,t));
 			*orig_arr=sendbuf2; //pass merged value into orig_arr
+			//printf("%d: ",myrank);
+			//print(444,*orig_arr,*orig_len*(int)pow(2,t));
 				if(myrank%(int)pow(2,t+1)!=0){
 				sendbuf5 = *orig_arr;
 				MPI_Send(sendbuf5,*orig_len*(int)pow(2,t),MPI_INT,myrank-(int)pow(2,(t)),myrank,MPI_COMM_WORLD);
 				}
+			
 		}
 	t++;
+	}
+	if(myrank==0){
+		/*
+	free(sendbuf);
+	free(sendbuf2);
+	free(sendbuf5);
+	free(sendbuf3);
+	*/
 	}
 	
 }
