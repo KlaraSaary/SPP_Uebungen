@@ -21,6 +21,8 @@ base_input=2097152
 input_iters=5
 input_line="POINTS "
 
+module load gcc openmpi/gcc
+
 # Timing should be initialized each time before the iterations start
 rm -f .cpu_freq
 
