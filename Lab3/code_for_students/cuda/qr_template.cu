@@ -579,7 +579,7 @@ void cuda_householder(mat *m, mat **R, mat **Q, mat *original)
     CudaCheckError();
 }
 
-/**
+/** Task2
  * Deep copy of matrix x to the device.
  * Return pointer to new structure on device in *dX
  */
@@ -588,22 +588,22 @@ void copyToDevice(mat** dX, mat* x){
     temp.m = x->m;
     temp.n = x->n;
     double* d_arr;
-    
+
     //allocate device matrix
-    // ...
-    CudaCheckError();    
-    
-    //allocate device array
-    // ...
+    cudaMalloc((void**)&dX, sizeof(mat));
     CudaCheckError();
-    
+
+    //allocate device array
+    cudaMalloc((void**)d_arr, m*n*sizeof(double));
+    CudaCheckError();
+
     //copy contents of x array
-    // ...
-    CudaCheckError();    
-    
+    cudaMemcpy(d_arr, x.z, m*n*sizeof(double), cudaMemcpyHostToDevice);
+    CudaCheckError();
+
     //save d_arr in temp
     temp.v = d_arr;
-    
+
     //copy the temp to device object
     cudaMemcpy(*dX, &temp, sizeof(mat_t), cudaMemcpyHostToDevice);
     CudaCheckError();
@@ -617,12 +617,12 @@ void copyToHost(mat** x, mat* dX){
     *x = (mat*)malloc(sizeof(mat_t));
     cudaMemcpy(*x, dX, sizeof(mat_t), cudaMemcpyDeviceToHost);
     CudaCheckError();
-    
+
     double* temp = (double*)malloc(sizeof(double) * (*x)->m * (*x)->n);
     // Copy array of dX to temp
-    // ...
-    CudaCheckError();    
-    
+    cudaMemcpy(temp, (*x)->v, sizeof(double) * (*x)->m * (*x)->n, cudaMemcpyDeviceToHost);
+    CudaCheckError();
+
     (*x)->v = temp;
 }
 
