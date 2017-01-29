@@ -102,11 +102,12 @@ mat* matrix_new(int m, int n)
  */
 void cuda_matrix_new(int m, int n, mat** x)
 {
-        double* d_arr;
+    double* d_arr;
 	mat temp;
+	temp->m = m;
+	temp->n = n;
     //allocate mat struct on device
-    
-	cudaMalloc((void**) &x,m*n*sizeof(int));
+	cudaMalloc(&x,sizeof(mat));
 	
     CudaCheckError();    
 
@@ -145,20 +146,18 @@ void cuda_matrix_delete(mat *m)
     
     // Copy m to host
     
-	cudaMemcpy(&temp,&m,sizeof(mat),cudaMemcpyHostToDevice);
+	cudaMemcpy(&temp,m,sizeof(mat),cudaMemcpyDeviceToHost);
 	
     CudaCheckError();    
 
     // Free array in m
-    int i;
-    for(i=0;i<m->n;i++){
-	//cudaFree(m[i*m->n]);
-    }
+ 
+	cudeFree(temp->v);
+    
     CudaCheckError();    
 
     // Free m
-    cudaFree(m->v);
-	free(temp.v);
+    cudaFree(m);
     CudaCheckError();
     
 }
@@ -191,7 +190,7 @@ void cuda_matrix_transpose(mat* m){
         double t = m->v[row*m->n+col];
         m->v[row*m->n+col] = m->v[col*m->m+row];
         // Finish swapping
-        // ... = t;
+       	m->v[col*m->m+row] = t;
     }
 }
 
@@ -240,7 +239,7 @@ void cuda_matrix_mul(mat* x, mat* y, mat* r)
         //each thread computes one element of r
         int k;
         for(k=0; k < x->n; ++k)
-            rValue += // ...
+            rValue += x->v[row*x->n+k]*y->v[k*y->n+col];
 
         r->v[row*r->n+col] = rValue;
     }
@@ -275,9 +274,9 @@ void cuda_matrix_minor(mat* x, int d, mat* m){
     
     if(row < x->m && col < x->n){
         if (row == col && row < d)
-            // ...
+            m->v[row*m->n+col]=1;
         if(row >= d && row < x->m && col >= d && col < x->n)
-            // ...
+            m->v[row*m->n+col]=x->v[row*x->n+col];
     }
 }
 
@@ -297,7 +296,7 @@ __global__
 void cuda_vmadd(double a[], double b[], double *s, double c[], int n){
     int row = blockIdx.x * blockDim.x + threadIdx.x;
     if(row <n)
-        c[row] = a[row] + // ...
+        c[row] = a[row] + b[row]*(*s);
 }
 
 // m = I - 2vv^T 
@@ -325,9 +324,9 @@ void cuda_vmul(double v[], int n, mat* m)
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     
     if(row < n && col < n){
-        m->v[row*m->n+col] = // ...
+        m->v[row*m->n+col] = -2*v[row]*v[col];
         if(row == col)
-            // ... += 1;
+            m->v[row*m->n+col] += 1;
     }
     
 }
@@ -354,9 +353,9 @@ void cuda_vnorm(double x[], int n, double *a, int flag)
         double sum = 0;
         int i;
         for (i = 0; i < n; i++) 
-            // ...
+            sum += x[i]*x[i];
         *a = sqrt(sum);
-        if (flag) *a = // ...
+        if (flag) *a = *a*(-1);
     }
 }
 
@@ -377,7 +376,7 @@ void cuda_vdiv(double x[], double *d, double y[], int n)
 {
     int row = blockIdx.x * blockDim.x + threadIdx.x;
     if(row <n)
-       // ...
+       y[row]=x[row]/(*d);
 }
 
 // take c-th column of m, put in v
@@ -397,7 +396,7 @@ void cuda_mcol(mat *m, double *v, int c)
 {
     int row = blockIdx.x * blockDim.x + threadIdx.x;
     if(row < m->m)
-        v[row] = m->v[/* ... */];
+        v[row] = m->v[row*m->n+c];
 }
 
 /**
@@ -408,10 +407,11 @@ __global__
 void cuda_initialize_e(double* e, int n, int k){
     int row = blockIdx.x * blockDim.x + threadIdx.x;
     if(row < n){
-        // ...
+        if(row=k){
             e[row] = 1;
-        // ...
+		}else{
             e[row] = 0;
+		}
     }
 }
 
