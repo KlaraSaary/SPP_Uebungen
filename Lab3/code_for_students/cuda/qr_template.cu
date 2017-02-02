@@ -103,29 +103,33 @@ mat* matrix_new(int m, int n)
 void cuda_matrix_new(int m, int n, mat** x)
 {
     double* d_arr;
-	mat temp;
+	mat* temp=(mat_t*)malloc(sizeof(mat_t)) ;
 	temp->m = m;
-	temp->n = n;
+        temp->n = n;
+	
     //allocate mat struct on device
-	cudaMalloc(&x,sizeof(mat));
+	cudaMalloc(x,sizeof(mat_t));
 
     CudaCheckError();
 
     //allocate array on device and set it to 0
 
-    cudaMalloc((void**)&d_arr, m*n*sizeof(double));
+    cudaMalloc(&d_arr, m*n*sizeof(double));
 
     CudaCheckError();
     cudaMemset(d_arr, 0, sizeof(double) * m * n);
     CudaCheckError();
 
     //store the device pointer in temp object
-    temp.v = d_arr;
-
+    temp->v = d_arr;
+   
     //copy the temp to device object
-    cudaMemcpy(*x, &temp, sizeof(mat_t),
-            cudaMemcpyHostToDevice);
+	fprintf(stderr,"*x: %p and &temp:%p\n",*x,temp->v);
+    cudaMemcpy(*x, temp, sizeof(mat_t),
+				cudaMemcpyHostToDevice);
+
     CudaCheckError();
+free(temp);
 }
 
 //delete a matrix
@@ -142,7 +146,7 @@ void matrix_delete(mat *m)
  */
 void cuda_matrix_delete(mat *m)
 {
-    mat temp;
+    mat* temp;
 
     // Copy m to host
 
@@ -152,7 +156,7 @@ void cuda_matrix_delete(mat *m)
 
     // Free array in m
 
-	cudeFree(temp->v);
+	cudaFree(temp->v);
 
     CudaCheckError();
 
@@ -497,10 +501,14 @@ void cuda_householder(mat *m, mat **R, mat **Q, mat *original)
     for (k = 0; k < original->n && k < original->m - 1; k++) {
 
         // Allocate and init matrix z1
+	fprintf(stderr,"here lays the matrix z1: %p",&z1);
+
         cuda_matrix_new(original->m,original->n, &z1);
+	fprintf(stderr, "MatrixNew\n");
 
         // One thread calculates one element of matrix z1
-        cuda_matrix_minor<<<dimGrid, dimBlock>>>(m, k, z1 ); //Versuch, Idee alternativ (original, k, z1) wenn original->v == m->v
+        cuda_matrix_minor<<<dimGrid, dimBlock>>>(original, k, z1 ); //Versuch, Idee alternativ (original, k, z1) wenn original->v == m->v
+		fprintf(stderr, "matrix_minor\n");
         CudaCheckError();
         if (z != m) cuda_matrix_delete(z);
         z = z1;
@@ -508,19 +516,23 @@ void cuda_householder(mat *m, mat **R, mat **Q, mat *original)
         // One thread calculates one element of vector x
         cuda_mcol<<<numBlocksSingle,numThreadsSingle>>>(z, x, k); //Abgeschrieben von sequentieller Funktion
         //z müsste ein Möglichkeit bieten auf z->v bzw m->v zuzugreifen
+		fprintf(stderr, "mcol\n");
         CudaCheckError();
 
         int f = (original->v[k*original->n+k] > 0) ? 1 : 0;
         // Call cuda_vnorm with only one thread
         cuda_vnorm<<<1,1>>>(x, original->m, a, f); //Eingetragen: 1,1
+		fprintf(stderr, "vnorm\n");
         CudaCheckError();
 
         // One thread calculates one element of vector e
         cuda_initialize_e<<<numBlocksSingle,numThreadsSingle>>>(e, original->m, k); //Eingetragen (e, original->m, k)
+		fprintf(stderr, "cuda_initalize\n");
         CudaCheckError();
 
         // One thread calculates one element of vector e
         cuda_vmadd<<<1,1>>>(x, e, a, e, original->m); //Eingetragen 1,1 und original->m
+		fprintf(stderr, "vmadd\n");
         CudaCheckError();
 
         // Call cuda_vnorm with only one thread
@@ -528,12 +540,15 @@ void cuda_householder(mat *m, mat **R, mat **Q, mat *original)
         CudaCheckError();
         // One thread calculates one element of vector e with cuda_vdiv
         cuda_vdiv<<<1,1>>>(e, a, e, original->m); //EIngetragen: cuda_cdiv und 1,1
+		fprintf(stderr, "vdiv\n");
         CudaCheckError();
 
         // Allocate matrix q
-        cuda_matrix_new(original->m, original->m, &q);
+	fprintf(stderr,"here lays the matrix q: %p",&q);
+        cuda_matrix_new(original->m, original->n, &q);
         // One thread calculates one element of matrix q
         cuda_vmul<<<dimGrid, dimBlock>>>(e, original->m, q);
+	fprintf(stderr, "vmul\n");
         CudaCheckError();
 
         // Allocate matrix z1
@@ -541,6 +556,7 @@ void cuda_householder(mat *m, mat **R, mat **Q, mat *original)
         // One thread calculates one element of matrix z1
         // Calculate matrix product z1 = q*z with cuda_matrix_mul
         cuda_matrix_mul<<<numBlocksSingle,numThreadsSingle>>>(q,z,z1); //Komplett selbst geschrieben
+	fprintf(stderr, "cuda_matrix_mul\n");
         CudaCheckError();
 
         if (z != m) cuda_matrix_delete(z);
@@ -591,15 +607,15 @@ void copyToDevice(mat** dX, mat* x){
     double* d_arr;
 
     //allocate device matrix
-    cudaMalloc((void**)&dX, sizeof(mat));
+    cudaMalloc((void**)dX, sizeof(mat));
     CudaCheckError();
 
     //allocate device array
-    cudaMalloc((void**)d_arr, m*n*sizeof(double));
-    CudaCheckError();
+    cudaMalloc((void**)&d_arr, x->m*x->n*sizeof(double));
+	CudaCheckError();
 
     //copy contents of x array
-    cudaMemcpy(d_arr, x.z, m*n*sizeof(double), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_arr, x->v, x->m*x->n*sizeof(double), cudaMemcpyHostToDevice);
     CudaCheckError();
 
     //save d_arr in temp
@@ -692,11 +708,13 @@ int main(int argc, char *argv[])
     //create a random row*col matrix
     mat *x = matrix_create(row, col);
     //puts("x"); matrix_show(x);
+	fprintf(stderr,"matix x %d,%d,%p\n",x->m,x->n,x->v);
 
     double time_start = get_wall_time();
 
     //copy x to device
     copyToDevice(&dX, x);
+	fprintf(stderr,"adress &X: %p\n",dX);
     //showGPUMem();
     //householder calculations on device
     cuda_householder(dX, &dR, &dQ, x);
@@ -737,5 +755,6 @@ int main(int argc, char *argv[])
     cuda_matrix_delete(dQ);
     cuda_matrix_delete(dR);
     cuda_matrix_delete(dM);
+	fflush(stdout);
     return 0;
 }
