@@ -12,6 +12,7 @@
 # Anschliessend schreiben Sie Ihre eigenen Befehle, wie z.B.
 module load gcc
 module load cuda
+make
 ./qr_template 100 200
 ./qr_template 200 200
 ./qr_template 300 400
